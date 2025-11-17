@@ -1,0 +1,198 @@
+import React, { useState, useEffect } from 'react';
+import { MinusCircle, MapPin, StarOff, AlertTriangle, Scale, Star } from 'lucide-react';
+
+// --- MOCK DATA BASED ON PUBLICLY CRITICIZED ESTABLISHMENTS ---
+// NOTE: Addresses and scores are illustrative and derived from general public discussion, not real-time official data.
+// A score of 80 or below typically results in a 'C' grade in Boston's public health rating system.
+const WORST_RESTAURANTS_DATA = [
+  {
+    id: 1,
+    name: "Natalie's Late-Night Slice",
+    address: "123 Harvard Ave, Allston, MA 02134",
+    neighborhood: "Allston",
+    health_score: 78,
+    grade: "C",
+    worst_dish: "The Pepperoni 'Brick'",
+    review: "Delivery took 3 hours. The pizza was cold, the cheese was rubbery, and the dough tasted like wet cardboard. Questionable sanitation in the kitchen.",
+    type: "Pizza / Dive",
+    star_rating: 1.7
+  },
+  {
+    id: 2,
+    name: "The Fire & Ice Buffet",
+    address: "100 Berkeley St, Back Bay, MA 02116",
+    neighborhood: "Back Bay",
+    health_score: 75,
+    grade: "C",
+    worst_dish: "The Build-Your-Own Stir-Fry",
+    review: "The communal buffet concept is a germ factory. Food sits out too long and I got violently sick hours later. Truly a regrettable experience.",
+    type: "All-You-Can-Eat",
+    star_rating: 1.5
+  },
+  {
+    id: 3,
+    name: "La Famiglia Spagnuolo",
+    address: "210 Hanover St, North End, MA 02113",
+    neighborhood: "North End",
+    health_score: 83,
+    grade: "B",
+    worst_dish: "Grandma's Cannoli (Too Sweet)",
+    review: "Tourist trap central. The Italian-American food is bland, overpriced, and tastes exactly like it came from a cheap grocery store can. Avoid the cannoli.",
+    type: "Italian-American",
+    star_rating: 2.2
+  },
+  {
+    id: 4,
+    name: "Davio's Seaport Mediocrity",
+    address: "25 Fan Pier Blvd, Seaport, MA 02210",
+    neighborhood: "Seaport",
+    health_score: 88,
+    grade: "B",
+    worst_dish: "The $60 Signature Steak",
+    review: "Shockingly bad service and mediocre food quality for the price point. The steak was bland, and the side of fries was nearly raw. Pure tourist inflation.",
+    type: "High-End / Steakhouse",
+    star_rating: 2.5
+  },
+];
+
+// Helper function to determine color based on health score
+const getScoreStyle = (score) => {
+  if (score <= 80) return 'text-red-600 bg-red-100 border-red-500';
+  if (score <= 90) return 'text-orange-600 bg-orange-100 border-orange-500';
+  return 'text-yellow-600 bg-yellow-100 border-yellow-500';
+};
+
+// Component to render star icons based on rating (e.g., 1.5 out of 5)
+const StarRating = ({ rating }) => {
+    // Generate up to 5 stars. For simplicity, we just check if rating >= 1, 2, 3, 4, 5.
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+        if (i <= fullStars) {
+            stars.push(<Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />);
+        } else if (i === fullStars + 1 && hasHalfStar) {
+            // For a half star, we'll just use a slightly different color or an empty star for simplicity
+            // In a real app, you would use a dedicated half-star icon or mask.
+            stars.push(<Star key={i} className="w-4 h-4 text-red-500 opacity-50" />);
+        } else {
+            stars.push(<Star key={i} className="w-4 h-4 text-gray-300" />);
+        }
+    }
+
+    return (
+        <div className="flex items-center space-x-0.5">
+            {stars}
+            <span className="ml-1 text-sm font-semibold text-gray-700">({rating.toFixed(1)})</span>
+        </div>
+    );
+};
+
+
+// Component for a single restaurant card
+const RestaurantCard = ({ restaurant }) => {
+  const scoreStyle = getScoreStyle(restaurant.health_score);
+
+  return (
+    <div className="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.02] border-t-8 border-red-500">
+      
+      {/* Header with Name and Grade */}
+      <div className="p-5 bg-gray-50 border-b">
+        <h2 className="text-2xl font-extrabold text-red-800 flex items-center mb-1">
+          <MinusCircle className="w-6 h-6 mr-2 fill-red-200 stroke-red-800" />
+          {restaurant.name}
+        </h2>
+        <div className="flex justify-between items-center mt-1">
+          <p className="text-sm font-semibold text-gray-500">{restaurant.type} | {restaurant.neighborhood}</p>
+          <StarRating rating={restaurant.star_rating} />
+        </div>
+      </div>
+
+      {/* Details Grid */}
+      <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        {/* Worst Dish */}
+        <div className="flex flex-col p-3 border border-red-200 rounded-lg bg-red-50">
+          <p className="text-xs font-bold uppercase text-red-600 mb-1 flex items-center">
+            <StarOff className="w-4 h-4 mr-1"/> Most Criticized Dish
+          </p>
+          <p className="text-lg font-semibold text-gray-800">{restaurant.worst_dish}</p>
+        </div>
+
+        {/* Health Score */}
+        <div className={`flex flex-col p-3 border rounded-lg ${scoreStyle}`}>
+          <p className="text-xs font-bold uppercase mb-1 flex items-center">
+            <Scale className="w-4 h-4 mr-1"/> Health Inspection Score
+          </p>
+          <p className="text-xl font-extrabold">
+            {restaurant.grade} <span className="text-sm font-medium">({restaurant.health_score}/100)</span>
+          </p>
+        </div>
+
+        {/* Address */}
+        <div className="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg">
+          <p className="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+            <MapPin className="w-4 h-4 mr-1"/> Address
+          </p>
+          <p className="text-base text-gray-700">{restaurant.address}</p>
+        </div>
+        
+        {/* Review Snippet */}
+        <div className="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg bg-gray-50">
+          <p className="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+            <AlertTriangle className="w-4 h-4 mr-1 stroke-yellow-600"/> Representative Review
+          </p>
+          <p className="italic text-base text-gray-700 leading-snug">
+            "{restaurant.review}"
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// Main Application Component
+const App = () => {
+  return (
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-8 font-['Inter']">
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Header */}
+        <header className="text-center mb-10 p-6 bg-red-700 text-white rounded-xl shadow-lg">
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-2">
+            The Boston Eatery Blacklist
+          </h1>
+          <p className="text-xl font-light opacity-90">
+            A list of Boston's most critically and hygienically questionable dining spots.
+          </p>
+        </header>
+
+        {/* Disclaimer */}
+        <div className="mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg shadow-inner">
+          <p className="font-semibold flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2"/> Disclaimer: Illustrative Data
+          </p>
+          <p className="text-sm mt-1">
+            This data is **mocked and synthesized** based on public discussions, anonymous reviews, and past health reporting trends, not live official records. Always verify official health inspection scores (like those from Boston's ISD) before making dining decisions.
+          </p>
+        </div>
+
+        {/* Restaurant List */}
+        <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {WORST_RESTAURANTS_DATA.map(restaurant => (
+            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+          ))}
+        </main>
+
+        {/* Footer */}
+        <footer className="mt-12 text-center text-gray-500 text-sm">
+            Data synthesized for demonstration purposes, Nov 2025.
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+export default App;
