@@ -1,198 +1,287 @@
-import React, { useState, useEffect } from 'react';
-import { MinusCircle, MapPin, StarOff, AlertTriangle, Scale, Star } from 'lucide-react';
-
-// --- MOCK DATA BASED ON PUBLICLY CRITICIZED ESTABLISHMENTS ---
-// NOTE: Addresses and scores are illustrative and derived from general public discussion, not real-time official data.
-// A score of 80 or below typically results in a 'C' grade in Boston's public health rating system.
-const WORST_RESTAURANTS_DATA = [
-  {
-    id: 1,
-    name: "Natalie's Late-Night Slice",
-    address: "123 Harvard Ave, Allston, MA 02134",
-    neighborhood: "Allston",
-    health_score: 78,
-    grade: "C",
-    worst_dish: "The Pepperoni 'Brick'",
-    review: "Delivery took 3 hours. The pizza was cold, the cheese was rubbery, and the dough tasted like wet cardboard. Questionable sanitation in the kitchen.",
-    type: "Pizza / Dive",
-    star_rating: 1.7
-  },
-  {
-    id: 2,
-    name: "The Fire & Ice Buffet",
-    address: "100 Berkeley St, Back Bay, MA 02116",
-    neighborhood: "Back Bay",
-    health_score: 75,
-    grade: "C",
-    worst_dish: "The Build-Your-Own Stir-Fry",
-    review: "The communal buffet concept is a germ factory. Food sits out too long and I got violently sick hours later. Truly a regrettable experience.",
-    type: "All-You-Can-Eat",
-    star_rating: 1.5
-  },
-  {
-    id: 3,
-    name: "La Famiglia Spagnuolo",
-    address: "210 Hanover St, North End, MA 02113",
-    neighborhood: "North End",
-    health_score: 83,
-    grade: "B",
-    worst_dish: "Grandma's Cannoli (Too Sweet)",
-    review: "Tourist trap central. The Italian-American food is bland, overpriced, and tastes exactly like it came from a cheap grocery store can. Avoid the cannoli.",
-    type: "Italian-American",
-    star_rating: 2.2
-  },
-  {
-    id: 4,
-    name: "Davio's Seaport Mediocrity",
-    address: "25 Fan Pier Blvd, Seaport, MA 02210",
-    neighborhood: "Seaport",
-    health_score: 88,
-    grade: "B",
-    worst_dish: "The $60 Signature Steak",
-    review: "Shockingly bad service and mediocre food quality for the price point. The steak was bland, and the side of fries was nearly raw. Pure tourist inflation.",
-    type: "High-End / Steakhouse",
-    star_rating: 2.5
-  },
-];
-
-// Helper function to determine color based on health score
-const getScoreStyle = (score) => {
-  if (score <= 80) return 'text-red-600 bg-red-100 border-red-500';
-  if (score <= 90) return 'text-orange-600 bg-orange-100 border-orange-500';
-  return 'text-yellow-600 bg-yellow-100 border-yellow-500';
-};
-
-// Component to render star icons based on rating (e.g., 1.5 out of 5)
-const StarRating = ({ rating }) => {
-    // Generate up to 5 stars. For simplicity, we just check if rating >= 1, 2, 3, 4, 5.
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-        if (i <= fullStars) {
-            stars.push(<Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />);
-        } else if (i === fullStars + 1 && hasHalfStar) {
-            // For a half star, we'll just use a slightly different color or an empty star for simplicity
-            // In a real app, you would use a dedicated half-star icon or mask.
-            stars.push(<Star key={i} className="w-4 h-4 text-red-500 opacity-50" />);
-        } else {
-            stars.push(<Star key={i} className="w-4 h-4 text-gray-300" />);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Boston Eatery Blacklist</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons (for icons like Star, MapPin) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom styles for the font */
+        body {
+            font-family: 'Inter', sans-serif;
         }
-    }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
 
-    return (
-        <div className="flex items-center space-x-0.5">
-            {stars}
-            <span className="ml-1 text-sm font-semibold text-gray-700">({rating.toFixed(1)})</span>
-        </div>
-    );
-};
-
-
-// Component for a single restaurant card
-const RestaurantCard = ({ restaurant }) => {
-  const scoreStyle = getScoreStyle(restaurant.health_score);
-
-  return (
-    <div className="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.02] border-t-8 border-red-500">
-      
-      {/* Header with Name and Grade */}
-      <div className="p-5 bg-gray-50 border-b">
-        <h2 className="text-2xl font-extrabold text-red-800 flex items-center mb-1">
-          <MinusCircle className="w-6 h-6 mr-2 fill-red-200 stroke-red-800" />
-          {restaurant.name}
-        </h2>
-        <div className="flex justify-between items-center mt-1">
-          <p className="text-sm font-semibold text-gray-500">{restaurant.type} | {restaurant.neighborhood}</p>
-          <StarRating rating={restaurant.star_rating} />
-        </div>
-      </div>
-
-      {/* Details Grid */}
-      <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-        
-        {/* Worst Dish */}
-        <div className="flex flex-col p-3 border border-red-200 rounded-lg bg-red-50">
-          <p className="text-xs font-bold uppercase text-red-600 mb-1 flex items-center">
-            <StarOff className="w-4 h-4 mr-1"/> Most Criticized Dish
-          </p>
-          <p className="text-lg font-semibold text-gray-800">{restaurant.worst_dish}</p>
-        </div>
-
-        {/* Health Score */}
-        <div className={`flex flex-col p-3 border rounded-lg ${scoreStyle}`}>
-          <p className="text-xs font-bold uppercase mb-1 flex items-center">
-            <Scale className="w-4 h-4 mr-1"/> Health Inspection Score
-          </p>
-          <p className="text-xl font-extrabold">
-            {restaurant.grade} <span className="text-sm font-medium">({restaurant.health_score}/100)</span>
-          </p>
-        </div>
-
-        {/* Address */}
-        <div className="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg">
-          <p className="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
-            <MapPin className="w-4 h-4 mr-1"/> Address
-          </p>
-          <p className="text-base text-gray-700">{restaurant.address}</p>
-        </div>
-        
-        {/* Review Snippet */}
-        <div className="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg bg-gray-50">
-          <p className="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
-            <AlertTriangle className="w-4 h-4 mr-1 stroke-yellow-600"/> Representative Review
-          </p>
-          <p className="italic text-base text-gray-700 leading-snug">
-            "{restaurant.review}"
-          </p>
-        </div>
-
-      </div>
+    <div id="app-root" class="p-4 sm:p-8 font-['Inter']">
+        <!-- Application content will be injected here by JavaScript -->
     </div>
-  );
-};
 
-// Main Application Component
-const App = () => {
-  return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-8 font-['Inter']">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Header */}
-        <header className="text-center mb-10 p-6 bg-red-700 text-white rounded-xl shadow-lg">
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-2">
-            The Boston Eatery Blacklist
-          </h1>
-          <p className="text-xl font-light opacity-90">
-            A list of Boston's most critically and hygienically questionable dining spots.
-          </p>
-        </header>
+    <script>
+        // --- MOCK DATA BASED ON PUBLICLY CRITICIZED ESTABLISHMENTS ---
+        const WORST_RESTAURANTS_DATA = [
+            {
+                id: 1,
+                name: "Natalie's Late-Night Slice",
+                address: "123 Harvard Ave, Allston, MA 02134",
+                neighborhood: "Allston",
+                health_score: 78,
+                grade: "C",
+                worst_dish: "The Pepperoni 'Brick'",
+                review: "Delivery took 3 hours. The pizza was cold, the cheese was rubbery, and the dough tasted like wet cardboard. Questionable sanitation in the kitchen.",
+                type: "Pizza / Dive",
+                star_rating: 1.7
+            },
+            {
+                id: 2,
+                name: "The Fire & Ice Buffet",
+                address: "100 Berkeley St, Back Bay, MA 02116",
+                neighborhood: "Back Bay",
+                health_score: 75,
+                grade: "C",
+                worst_dish: "The Build-Your-Own Stir-Fry",
+                review: "The communal buffet concept is a germ factory. Food sits out too long and I got violently sick hours later. Truly a regrettable experience.",
+                type: "All-You-Can-Eat",
+                star_rating: 1.5
+            },
+            {
+                id: 3,
+                name: "La Famiglia Spagnuolo",
+                address: "210 Hanover St, North End, MA 02113",
+                neighborhood: "North End",
+                health_score: 83,
+                grade: "B",
+                worst_dish: "Grandma's Cannoli (Too Sweet)",
+                review: "Tourist trap central. The Italian-American food is bland, overpriced, and tastes exactly like it came from a cheap grocery store can. Avoid the cannoli.",
+                type: "Italian-American",
+                star_rating: 2.2
+            },
+            {
+                id: 4,
+                name: "Davio's Seaport Mediocrity",
+                address: "25 Fan Pier Blvd, Seaport, MA 02210",
+                neighborhood: "Seaport",
+                health_score: 88,
+                grade: "B",
+                worst_dish: "The $60 Signature Steak",
+                review: "Shockingly bad service and mediocre food quality for the price point. The steak was bland, and the side of fries was nearly raw. Pure tourist inflation.",
+                type: "High-End / Steakhouse",
+                star_rating: 2.5
+            },
+        ];
 
-        {/* Disclaimer */}
-        <div className="mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg shadow-inner">
-          <p className="font-semibold flex items-center">
-            <AlertTriangle className="w-5 h-5 mr-2"/> Disclaimer: Illustrative Data
-          </p>
-          <p className="text-sm mt-1">
-            This data is **mocked and synthesized** based on public discussions, anonymous reviews, and past health reporting trends, not live official records. Always verify official health inspection scores (like those from Boston's ISD) before making dining decisions.
-          </p>
-        </div>
+        // Helper function to determine color based on health score
+        function getScoreStyle(score) {
+            if (score <= 80) return 'text-red-600 bg-red-100 border-red-500';
+            if (score <= 90) return 'text-orange-600 bg-orange-100 border-orange-500';
+            return 'text-yellow-600 bg-yellow-100 border-yellow-500';
+        }
 
-        {/* Restaurant List */}
-        <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {WORST_RESTAURANTS_DATA.map(restaurant => (
-            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-          ))}
-        </main>
+        // Helper function to create an HTML element
+        function createElement(tag, className = '', content = '') {
+            const element = document.createElement(tag);
+            if (className) {
+                element.className = className;
+            }
+            if (content) {
+                element.innerHTML = content;
+            }
+            return element;
+        }
 
-        {/* Footer */}
-        <footer className="mt-12 text-center text-gray-500 text-sm">
-            Data synthesized for demonstration purposes, Nov 2025.
-        </footer>
-      </div>
-    </div>
-  );
-};
+        /**
+         * Helper function to safely get a Lucide icon SVG string.
+         * We use lucide.icons[iconName].toSvg() which is the correct way for the CDN version.
+         */
+        function getLucideIcon(iconName, classes = '') {
+            if (typeof lucide !== 'undefined' && lucide.icons && lucide.icons[iconName]) {
+                try {
+                    // This returns the full <svg>...</svg> tag string
+                    return lucide.icons[iconName].toSvg({ class: classes });
+                } catch (e) {
+                    console.error(`Error generating SVG for ${iconName}:`, e);
+                    return '';
+                }
+            }
+            return ''; // Return empty string if lucide or the icon is not ready
+        }
 
-export default App;
+        // Component to render star icons based on rating
+        function createStarRating(rating) {
+            const container = createElement('div', 'flex items-center space-x-0.5');
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+
+            for (let i = 1; i <= 5; i++) {
+                let starClasses = "w-4 h-4";
+                if (i <= fullStars) {
+                    // Full Red Star
+                    starClasses += " fill-red-500 text-red-500";
+                } else if (i === fullStars + 1 && hasHalfStar) {
+                    // Half-filled or dimmed star
+                    starClasses += " text-red-500 opacity-50";
+                } else {
+                    // Empty Gray Star
+                    starClasses += " text-gray-300";
+                }
+
+                // Use the safe helper function, passing the classes directly
+                const starIcon = getLucideIcon('star', starClasses);
+                // We use += to append the full SVG tag string
+                container.innerHTML += starIcon;
+            }
+
+            const ratingText = createElement('span', 'ml-1 text-sm font-semibold text-gray-700', `(${rating.toFixed(1)})`);
+            container.appendChild(ratingText);
+
+            return container;
+        }
+
+        // Component for a single restaurant card
+        function createRestaurantCard(restaurant) {
+            const scoreStyle = getScoreStyle(restaurant.health_score);
+            
+            const card = createElement('div', 'bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.02] border-t-8 border-red-500');
+
+            // Header
+            const header = createElement('div', 'p-5 bg-gray-50 border-b');
+            // Icon: w-6 h-6, custom fill/stroke
+            const minusCircleIcon = getLucideIcon('minus-circle', 'w-6 h-6 mr-2 fill-red-200 stroke-red-800');
+            const nameHeading = createElement('h2', 'text-2xl font-extrabold text-red-800 flex items-center mb-1', 
+                `${minusCircleIcon} ${restaurant.name}` // Directly insert the SVG tag
+            );
+            
+            const headerBottom = createElement('div', 'flex justify-between items-center mt-1');
+            const detailsText = createElement('p', 'text-sm font-semibold text-gray-500', `${restaurant.type} | ${restaurant.neighborhood}`);
+            headerBottom.appendChild(detailsText);
+            headerBottom.appendChild(createStarRating(restaurant.star_rating));
+
+            header.appendChild(nameHeading);
+            header.appendChild(headerBottom);
+            card.appendChild(header);
+
+            // Details Grid
+            const detailsGrid = createElement('div', 'p-5 grid grid-cols-1 md:grid-cols-2 gap-4');
+            
+            // Worst Dish
+            const starOffIcon = getLucideIcon('star-off', 'w-4 h-4 mr-1');
+            const worstDish = createElement('div', 'flex flex-col p-3 border border-red-200 rounded-lg bg-red-50');
+            worstDish.innerHTML = `
+                <p class="text-xs font-bold uppercase text-red-600 mb-1 flex items-center">
+                    ${starOffIcon} Most Criticized Dish
+                </p>
+                <p class="text-lg font-semibold text-gray-800">${restaurant.worst_dish}</p>
+            `;
+            detailsGrid.appendChild(worstDish);
+
+            // Health Score
+            const scaleIcon = getLucideIcon('scale', 'w-4 h-4 mr-1');
+            const healthScore = createElement('div', `flex flex-col p-3 border rounded-lg ${scoreStyle}`);
+            healthScore.innerHTML = `
+                <p class="text-xs font-bold uppercase mb-1 flex items-center">
+                    ${scaleIcon} Health Inspection Score
+                </p>
+                <p class="text-xl font-extrabold">
+                    ${restaurant.grade} <span class="text-sm font-medium">(${restaurant.health_score}/100)</span>
+                </p>
+            `;
+            detailsGrid.appendChild(healthScore);
+
+            // Address
+            const mapPinIcon = getLucideIcon('map-pin', 'w-4 h-4 mr-1');
+            const address = createElement('div', 'col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg');
+            address.innerHTML = `
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                    ${mapPinIcon} Address
+                </p>
+                <p class="text-base text-gray-700">${restaurant.address}</p>
+            `;
+            detailsGrid.appendChild(address);
+            
+            // Review Snippet
+            // Icon: w-4 h-4, stroke-yellow-600
+            const alertTriangleIcon = getLucideIcon('alert-triangle', 'w-4 h-4 mr-1 stroke-yellow-600');
+            const reviewSnippet = createElement('div', 'col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg bg-gray-50');
+            reviewSnippet.innerHTML = `
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                    ${alertTriangleIcon} Representative Review
+                </p>
+                <p class="italic text-base text-gray-700 leading-snug">
+                    "${restaurant.review}"
+                </p>
+            `;
+            detailsGrid.appendChild(reviewSnippet);
+            
+            card.appendChild(detailsGrid);
+            return card;
+        }
+
+        // Main Application Rendering Function
+        function renderApp() {
+            // New check: Wait until Lucide is available (specifically the icons object)
+            if (typeof lucide === 'undefined' || !lucide.icons) {
+                console.log("Lucide library not yet fully initialized. Waiting...");
+                // Note: window.onload will retry this automatically
+                return;
+            }
+
+            const appRoot = document.getElementById('app-root');
+            // Clear existing content to prevent duplication on multiple runs
+            appRoot.innerHTML = '';
+            
+            // Container for content
+            const container = createElement('div', 'max-w-6xl mx-auto');
+
+            // Header
+            const header = createElement('header', 'text-center mb-10 p-6 bg-red-700 text-white rounded-xl shadow-lg');
+            header.innerHTML = `
+                <h1 class="text-4xl sm:text-5xl font-extrabold mb-2">
+                    The Boston Eatery Blacklist
+                </h1>
+                <p class="text-xl font-light opacity-90">
+                    A list of Boston's most critically and hygienically questionable dining spots.
+                </p>
+            `;
+            container.appendChild(header);
+
+            // Disclaimer
+            // Icon: w-5 h-5
+            const alertTriangleIcon = getLucideIcon('alert-triangle', 'w-5 h-5 mr-2');
+            const disclaimer = createElement('div', 'mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg shadow-inner');
+            disclaimer.innerHTML = `
+                <p class="font-semibold flex items-center">
+                    ${alertTriangleIcon} Disclaimer: Illustrative Data
+                </p>
+                <p class="text-sm mt-1">
+                    This data is <strong>mocked and synthesized</strong> based on public discussions, anonymous reviews, and past health reporting trends, not live official records. Always verify official health inspection scores (like those from Boston's ISD) before making dining decisions.
+                </p>
+            `;
+            container.appendChild(disclaimer);
+
+            // Restaurant List (Main)
+            const main = createElement('main', 'grid grid-cols-1 lg:grid-cols-2 gap-8');
+            
+            WORST_RESTAURANTS_DATA.forEach(restaurant => {
+                main.appendChild(createRestaurantCard(restaurant));
+            });
+            container.appendChild(main);
+
+            // Footer
+            const footer = createElement('footer', 'mt-12 text-center text-gray-500 text-sm', 'Data synthesized for demonstration purposes, Nov 2025.');
+            container.appendChild(footer);
+
+            appRoot.appendChild(container);
+
+            // Since we are generating SVGs manually using .toSvg(), we no longer need the final lucide.createIcons() call here.
+        }
+
+        // Use window.onload to ensure all external scripts (like Lucide) have finished loading
+        // before attempting to run the rendering logic.
+        window.onload = renderApp;
+    </script>
+</body>
+</html>
