@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Boston Eatery Blacklist</title>
+    
+    <!-- 1. Include Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Include Google Font "Inter" -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- 3. Include Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <!-- Set base font for the page -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+    <div class="p-4 sm:p-8">
+      <div class="max-w-6xl mx-auto">
+        
+        <!-- Header -->
+        <header class="text-center mb-10 p-6 bg-red-700 text-white rounded-xl shadow-lg">
+          <h1 class="text-4xl sm:text-5xl font-extrabold mb-2">
+            The Boston Eatery Blacklist
+          </h1>
+          <p class="text-xl font-light opacity-90">
+            A list of Boston's most critically and hygienically questionable dining spots.
+          </p>
+        </header>
+
+        <!-- Disclaimer -->
+        <div class="mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg shadow-inner">
+          <p class="font-semibold flex items-center">
+            <!-- Lucide Icon: AlertTriangle -->
+            <i data-lucide="alert-triangle" class="w-5 h-5 mr-2"></i> 
+            Disclaimer: Illustrative Data
+          </p>
+          <p class="text-sm mt-1">
+            This data is <strong>mocked and synthesized</strong> based on public discussions, anonymous reviews, and past health reporting trends, not live official records. Always verify official health inspection scores (like those from Boston's ISD) before making dining decisions.
+          </p>
+        </div>
+
+        <!-- Restaurant List -->
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          <!-- Card 1: Natalie's Late-Night Slice -->
+          <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.02] border-t-8 border-red-500">
+            <!-- Header with Name and Grade -->
+            <div class="p-5 bg-gray-50 border-b">
+              <h2 class="text-2xl font-extrabold text-red-800 flex items-center mb-1">
+                <!-- Lucide Icon: MinusCircle -->
+                <i data-lucide="minus-circle" class="w-6 h-6 mr-2 fill-red-200 stroke-red-800"></i>
+                Natalie's Late-Night Slice
+              </h2>
+              <div class="flex justify-between items-center mt-1">
+                <p class="text-sm font-semibold text-gray-500">Pizza / Dive | Allston</p>
+                <!-- Star Rating (1.7) -->
+                <div class="flex items-center space-x-0.5">
+                  <i data-lucide="star" class="w-4 h-4 fill-red-500 text-red-500"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-red-500 opacity-50"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <span class="ml-1 text-sm font-semibold text-gray-700">(1.7)</span>
+                </div>
+              </div>
+            </div>
+            <!-- Details Grid -->
+            <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Worst Dish -->
+              <div class="flex flex-col p-3 border border-red-200 rounded-lg bg-red-50">
+                <p class="text-xs font-bold uppercase text-red-600 mb-1 flex items-center">
+                  <i data-lucide="star-off" class="w-4 h-4 mr-1"></i> Most Criticized Dish
+                </p>
+                <p class="text-lg font-semibold text-gray-800">The Pepperoni 'Brick'</p>
+              </div>
+              <!-- Health Score (78 -> Red) -->
+              <div class="flex flex-col p-3 border rounded-lg text-red-600 bg-red-100 border-red-500">
+                <p class="text-xs font-bold uppercase mb-1 flex items-center">
+                  <i data-lucide="scale" class="w-4 h-4 mr-1"></i> Health Inspection Score
+                </p>
+                <p class="text-xl font-extrabold">
+                  C <span class="text-sm font-medium">(78/100)</span>
+                </p>
+              </div>
+              <!-- Address -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> Address
+                </p>
+                <p class="text-base text-gray-700">123 Harvard Ave, Allston, MA 02134</p>
+              </div>
+              <!-- Review Snippet -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg bg-gray-50">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 mr-1 stroke-yellow-600"></i> Representative Review
+                </p>
+                <p class="italic text-base text-gray-700 leading-snug">
+                  "Delivery took 3 hours. The pizza was cold, the cheese was rubbery, and the dough tasted like wet cardboard. Questionable sanitation in the kitchen."
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 2: The Fire & Ice Buffet -->
+          <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.02] border-t-8 border-red-500">
+            <!-- Header with Name and Grade -->
+            <div class="p-5 bg-gray-50 border-b">
+              <h2 class="text-2xl font-extrabold text-red-800 flex items-center mb-1">
+                <i data-lucide="minus-circle" class="w-6 h-6 mr-2 fill-red-200 stroke-red-800"></i>
+                The Fire & Ice Buffet
+              </h2>
+              <div class="flex justify-between items-center mt-1">
+                <p class="text-sm font-semibold text-gray-500">All-You-Can-Eat | Back Bay</p>
+                <!-- Star Rating (1.5) -->
+                <div class="flex items-center space-x-0.5">
+                  <i data-lucide="star" class="w-4 h-4 fill-red-500 text-red-500"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-red-500 opacity-50"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <span class="ml-1 text-sm font-semibold text-gray-700">(1.5)</span>
+                </div>
+              </div>
+            </div>
+            <!-- Details Grid -->
+            <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Worst Dish -->
+              <div class="flex flex-col p-3 border border-red-200 rounded-lg bg-red-50">
+                <p class="text-xs font-bold uppercase text-red-600 mb-1 flex items-center">
+                  <i data-lucide="star-off" class="w-4 h-4 mr-1"></i> Most Criticized Dish
+                </p>
+                <p class="text-lg font-semibold text-gray-800">The Build-Your-Own Stir-Fry</p>
+              </div>
+              <!-- Health Score (75 -> Red) -->
+              <div class="flex flex-col p-3 border rounded-lg text-red-600 bg-red-100 border-red-500">
+                <p class="text-xs font-bold uppercase mb-1 flex items-center">
+                  <i data-lucide="scale" class="w-4 h-4 mr-1"></i> Health Inspection Score
+                </p>
+                <p class="text-xl font-extrabold">
+                  C <span class="text-sm font-medium">(75/100)</span>
+                </p>
+              </div>
+              <!-- Address -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> Address
+                </p>
+                <p class="text-base text-gray-700">100 Berkeley St, Back Bay, MA 02116</p>
+              </div>
+              <!-- Review Snippet -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg bg-gray-50">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 mr-1 stroke-yellow-600"></i> Representative Review
+                </p>
+                <p class="italic text-base text-gray-700 leading-snug">
+                  "The communal buffet concept is a germ factory. Food sits out too long and I got violently sick hours later. Truly a regrettable experience."
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 3: La Famiglia Spagnuolo -->
+          <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.02] border-t-8 border-red-500">
+            <!-- Header with Name and Grade -->
+            <div class="p-5 bg-gray-50 border-b">
+              <h2 class="text-2xl font-extrabold text-red-800 flex items-center mb-1">
+                <i data-lucide="minus-circle" class="w-6 h-6 mr-2 fill-red-200 stroke-red-800"></i>
+                La Famiglia Spagnuolo
+              </h2>
+              <div class="flex justify-between items-center mt-1">
+                <p class="text-sm font-semibold text-gray-500">Italian-American | North End</p>
+                <!-- Star Rating (2.2) -->
+                <div class="flex items-center space-x-0.5">
+                  <i data-lucide="star" class="w-4 h-4 fill-red-500 text-red-500"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-red-500 text-red-500"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-red-500 opacity-50"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <span class="ml-1 text-sm font-semibold text-gray-700">(2.2)</span>
+                </div>
+              </div>
+            </div>
+            <!-- Details Grid -->
+            <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Worst Dish -->
+              <div class="flex flex-col p-3 border border-red-200 rounded-lg bg-red-50">
+                <p class="text-xs font-bold uppercase text-red-600 mb-1 flex items-center">
+                  <i data-lucide="star-off" class="w-4 h-4 mr-1"></i> Most Criticized Dish
+                </p>
+                <p class="text-lg font-semibold text-gray-800">Grandma's Cannoli (Too Sweet)</p>
+              </div>
+              <!-- Health Score (83 -> Orange) -->
+              <div class="flex flex-col p-3 border rounded-lg text-orange-600 bg-orange-100 border-orange-500">
+                <p class="text-xs font-bold uppercase mb-1 flex items-center">
+                  <i data-lucide="scale" class="w-4 h-4 mr-1"></i> Health Inspection Score
+                </p>
+                <p class="text-xl font-extrabold">
+                  B <span class="text-sm font-medium">(83/100)</span>
+                </p>
+              </div>
+              <!-- Address -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> Address
+                </p>
+                <p class="text-base text-gray-700">210 Hanover St, North End, MA 02113</p>
+              </div>
+              <!-- Review Snippet -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg bg-gray-50">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 mr-1 stroke-yellow-600"></i> Representative Review
+                </p>
+                <p class="italic text-base text-gray-700 leading-snug">
+                  "Tourist trap central. The Italian-American food is bland, overpriced, and tastes exactly like it came from a cheap grocery store can. Avoid the cannoli."
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 4: Davio's Seaport Mediocrity -->
+          <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-[1.02] border-t-8 border-red-500">
+            <!-- Header with Name and Grade -->
+            <div class="p-5 bg-gray-50 border-b">
+              <h2 class="text-2xl font-extrabold text-red-800 flex items-center mb-1">
+                <i data-lucide="minus-circle" class="w-6 h-6 mr-2 fill-red-200 stroke-red-800"></i>
+                Davio's Seaport Mediocrity
+              </h2>
+              <div class="flex justify-between items-center mt-1">
+                <p class="text-sm font-semibold text-gray-500">High-End / Steakhouse | Seaport</p>
+                <!-- Star Rating (2.5) -->
+                <div class="flex items-center space-x-0.5">
+                  <i data-lucide="star" class="w-4 h-4 fill-red-500 text-red-500"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-red-500 text-red-500"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-red-500 opacity-50"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                  <span class="ml-1 text-sm font-semibold text-gray-700">(2.5)</span>
+                </div>
+              </div>
+            </div>
+            <!-- Details Grid -->
+            <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Worst Dish -->
+              <div class="flex flex-col p-3 border border-red-200 rounded-lg bg-red-50">
+                <p class="text-xs font-bold uppercase text-red-600 mb-1 flex items-center">
+                  <i data-lucide="star-off" class="w-4 h-4 mr-1"></i> Most Criticized Dish
+                </or>
+                <p class="text-lg font-semibold text-gray-800">The $60 Signature Steak</p>
+              </div>
+              <!-- Health Score (88 -> Orange) -->
+              <div class="flex flex-col p-3 border rounded-lg text-orange-600 bg-orange-100 border-orange-500">
+                <p class="text-xs font-bold uppercase mb-1 flex items-center">
+                  <i data-lucide="scale" class="w-4 h-4 mr-1"></i> Health Inspection Score
+                </p>
+                <p class="text-xl font-extrabold">
+                  B <span class="text-sm font-medium">(88/100)</span>
+                </p>
+              </div>
+              <!-- Address -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> Address
+                </p>
+                <p class="text-base text-gray-700">25 Fan Pier Blvd, Seaport, MA 02210</p>
+              </div>
+              <!-- Review Snippet -->
+              <div class="col-span-1 md:col-span-2 flex flex-col p-3 border border-gray-200 rounded-lg bg-gray-50">
+                <p class="text-xs font-bold uppercase text-gray-500 mb-1 flex items-center">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 mr-1 stroke-yellow-600"></i> Representative Review
+                </p>
+                <p class="italic text-base text-gray-700 leading-snug">
+                  "Shockingly bad service and mediocre food quality for the price point. The steak was bland, and the side of fries was nearly raw. Pure tourist inflation."
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            Data synthesized for demonstration purposes, Nov 2025.
+        </footer>
+      </div>
+    </div>
+
+    <!-- 4. Activate Lucide Icons -->
+    <script>
+      lucide.createIcons();
+    </script>
+</body>
+</html>
